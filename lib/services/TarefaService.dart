@@ -7,6 +7,7 @@ class TarefaService
   Uri urlTarefas = Uri.parse('https://crudmouraapi.azurewebsites.net/api/tarefas/');
 
   Future<List<Tarefa>> getTarefas() async {
+
     http.Response response = await http.get(this.urlTarefas);
 
     if(response.statusCode == 200) {
@@ -19,67 +20,77 @@ class TarefaService
 
   Future AdicionarTarefa(String nomeTarefa) async {
 
-    var body = {
-      "id": "fc3760a3-dde2-47ce-aed4-e640d249c386",
-      "nome": nomeTarefa,
-      "realizada": false
-    };
+    var tarefaParaAdicionar = new Tarefa("00000000-0000-0000-0000-000000000000", nomeTarefa, false);
 
-    return http.post(this.urlTarefas, headers: {"Content-Type": "application/json"}, body: json.encode(body))
-        .then((http.Response response){
-      final int statusCode = response.statusCode;
+    var body = await MontaObjetoTarefa(tarefaParaAdicionar, false);
 
-      if (statusCode < 200 || statusCode > 400 || json == null) {
-        throw new Exception("Error while fetching data");
-      }
+    return http.post(
+        this.urlTarefas,
+        headers: {"Content-Type": "application/json"},
+        body: body).then((http.Response response){
+
+          final int statusCode = response.statusCode;
+
+          if (statusCode < 200 || statusCode > 400 || json == null) {
+            throw new Exception("Error while fetching data");
+          }
+
     });
   }
 
-  Future AlterarTarefa(Tarefa tarefa, String novoNome) async
-  {
-    var body = {
-      "id": tarefa.tarefaid,
-      "nome": novoNome,
-      "realizada": tarefa.tarefarealizada
-    };
+  Future AlterarTarefa(Tarefa tarefa, String novoNome) async {
 
-    Uri url = Uri.parse(this.urlTarefas.toString() + tarefa.tarefaid);
+    var tarefaParaAlterar = new Tarefa(tarefa.tarefaid, novoNome, tarefa.tarefarealizada);
 
-    return http.put(url, headers: {"Content-Type": "application/json"}, body: json.encode(body))
-        .then((http.Response response){
-      final int statusCode = response.statusCode;
+    var body = await MontaObjetoTarefa(tarefaParaAlterar, false);
 
-      if (statusCode < 200 || statusCode > 400 || json == null) {
-        throw new Exception("Error while fetching data");
-      }
+    return http.put(
+        getUrlComId(tarefa.tarefaid),
+        headers: {"Content-Type": "application/json"},
+        body: body).then((http.Response response){
+
+          final int statusCode = response.statusCode;
+
+          if (statusCode < 200 || statusCode > 400 || json == null) {
+            throw new Exception("Error while fetching data");
+          }
     });
   }
 
   Future AlterarStatus(Tarefa tarefa) async
   {
-    var body = {
-      "id": tarefa.tarefaid,
-      "nome": tarefa.tarefanome,
-      "realizada": !tarefa.tarefarealizada
-    };
+    var body = await MontaObjetoTarefa(tarefa, true);
 
-    Uri url = Uri.parse(this.urlTarefas.toString() + tarefa.tarefaid);
+    return http.put(
+        getUrlComId(tarefa.tarefaid),
+        headers: {"Content-Type": "application/json"}, body: body).then((http.Response response){
 
-    return http.put(url, headers: {"Content-Type": "application/json"}, body: json.encode(body))
-        .then((http.Response response){
-      final int statusCode = response.statusCode;
+          final int statusCode = response.statusCode;
 
-      if (statusCode < 200 || statusCode > 400 || json == null) {
-        throw new Exception("Error while fetching data");
-      }
+          if (statusCode < 200 || statusCode > 400 || json == null) {
+            throw new Exception("Error while fetching data");
+          }
     });
   }
 
   Future DeletarTarefa(String idTarefa)async
   {
-    Uri url = Uri.parse(this.urlTarefas.toString() + idTarefa);
+    return http.delete(
+          getUrlComId(idTarefa),
+          headers: {"Content-Type": "application/json"}
+        );
+  }
 
-    return http.delete(url, headers: {"Content-Type": "application/json"} );
+  MontaObjetoTarefa(Tarefa tarefa, bool isAlterarEstatus) async{
+    return json.encode({
+      "id": tarefa.tarefaid,
+      "nome": tarefa.tarefanome,
+      "realizada": isAlterarEstatus ? !tarefa.tarefarealizada : tarefa.tarefarealizada
+    });
+  }
+
+  getUrlComId(String idTarefa){
+    return Uri.parse(this.urlTarefas.toString() + idTarefa);
   }
 
 }
