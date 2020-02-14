@@ -1,16 +1,20 @@
-# crud_moura_flutter_app
+# Lista de tarefas - Flutter
 
-Lista de tarefas CRUD Moura.
+Para desenvolver o app foi adicionado somente mais um package, o http.
+Foi separado em pastas a versão android e a versão ios.(Fiz somente a versão android). No arquivo main.dart foi feito um chaveamento que verifica qual dispositivo que está rodando o app e retorna a versão em ios(Cupertino) ou android(material).
+Também foi criada uma pasta service que contém os arquivos que fazem as chamadas para a API, uma pasta models e uma pasta uteis. 
+O app está apontando para a API publicada no AZURE.
 
-## Getting Started
+## Como funciona:
 
-This project is a starting point for a Flutter application.
+## Adicionar tarefa:
+Na appBar há um ícone de + que ao clicá-lo será exibida uma dialog para inserção da tarefa.
 
-A few resources to get you started if this is your first Flutter project:
+## Alterar tarefa:
+Para alterar a tarefa é necessário clicar no nome da tarefa e será exibida uma dialog para alterar o nome.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Deletar tarefa:
+Para deletar uma tarefa é necessário clicar no ícone de exclusão que está a frente do nome da tarefa e confirmar a exclusão na dialog. 
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Marcar tarefa como concluída:
+Para marcar uma tarefa como concluída basta criar no ícone que está antes do nome da tarefa. Ao marcar essa opção o ícone ficará verde. Para desfazer essa opção basta clicar novamente no ícone.
